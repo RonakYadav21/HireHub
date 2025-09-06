@@ -12,23 +12,24 @@ import com.PlacementService.Dto.JobPostingDTO;
 import com.PlacementService.Model.JobApplication;
 import com.PlacementService.Repository.JobApplicationRepository;
 import com.PlacementService.client.CompanyFeignClient;
+import com.PlacementService.integration.CompanyIntegrationService;
 
 @Service
 public class JobService {
+	  @Autowired
+	    private CompanyIntegrationService companyIntegrationService;
 
-    @Autowired
-    private CompanyFeignClient companyFeignClient;
     
     @Autowired
      private  JobApplicationRepository jobapplicationrepo;
 
 //    @Cacheable("allJobs")  // You can later plug in Redis or Caffeine
     public List<JobPostingDTO> fetchAllJobsForStudents() {
-        return companyFeignClient.getAllJobs();
+        return companyIntegrationService.getAllJobs();
     }
     
     public List<JobPostingDTO> searchJobs(String companyName, String location, String domain, String minSalary) {
-        return companyFeignClient.searchJobs(companyName, location, domain, minSalary);
+        return companyIntegrationService.searchJobs(companyName, location, domain, minSalary);
     }
     
     public String applyForJob(String studentEmail, JobApplicationRequest request) {
@@ -39,7 +40,7 @@ public class JobService {
 
         try {
             // First notify company to check eligibility
-            companyFeignClient.notifyCompanyAboutApplication(request.getJobId(), studentEmail);
+        	companyIntegrationService.notifyCompanyAboutApplication(request.getJobId(), studentEmail);
 
             // If no exception -> student eligible -> save application
             JobApplication application = JobApplication.builder()
@@ -62,7 +63,7 @@ public class JobService {
         List<JobApplication> applications = jobapplicationrepo.findByStudentEmail(studentEmail);
 
         return applications.stream().map(app -> {
-            JobPostingDTO job = companyFeignClient.getJobById(app.getJobId());
+            JobPostingDTO job = companyIntegrationService.getJobById(app.getJobId());
 
             return new JobApplicationDTO(
                 app.getJobId(),
