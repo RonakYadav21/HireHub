@@ -25,8 +25,6 @@ public class StudentService {
 	  // Save to local student DB
 	Student s= studentrepo.save(student);
 	
-	
-	
 	 // Prepare AuthService DTO
     RegisterAuthUserRequest authUser = new RegisterAuthUserRequest();
     authUser.setUsername(student.getEmail());

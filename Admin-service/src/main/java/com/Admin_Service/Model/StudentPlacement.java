@@ -1,8 +1,8 @@
-package com.PlacementService.Model;
+package com.Admin_Service.Model;
+
 
 import jakarta.persistence.Column;
 import lombok.Data;
-
 
 @Data
 public class StudentPlacement {

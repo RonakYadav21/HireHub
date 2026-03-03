@@ -1,4 +1,4 @@
-package com.CompanyService.Messaging;
+package com.Admin_Service.Messaging;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -10,21 +10,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String JOB_STATUS_QUEUE = "job-status-queue";
-    public static final String COMPANY_STATUS_QUEUE = "Compnay-status-queue";
-
+    public static final String JOB_STATUS_QUEUE = "Compnay-status-queue";
 
     @Bean
     public Queue jobStatusQueue() {
-        return new Queue(JOB_STATUS_QUEUE, true);
+        return new Queue(JOB_STATUS_QUEUE, true); // durable queue
     }
 
-    @Bean
-    public Queue CompanyStatusQueue() {
-        return new Queue(COMPANY_STATUS_QUEUE, true);
-    }
-
-    
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();

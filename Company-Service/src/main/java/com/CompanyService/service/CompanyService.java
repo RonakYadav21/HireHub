@@ -27,8 +27,8 @@ public class CompanyService {
 	@Autowired
 	private JobPostingMapper mapper;
 	
-	@Autowired
-	CompanyRepository repo;
+//	@Autowired
+//	CompanyRepository repo;
 	@Autowired
 	private JobPostingRepository jobRepo;
 	
@@ -41,10 +41,10 @@ public class CompanyService {
 	@Autowired
 	  CompanyMapper companyMapper;
 	public Company Register(Company company) {
-	    company.setApproved(false);  // Optional: Wait for admin approval
+	    company.setStatus("pending");;  // Optional: Wait for admin approval
 	    company.setCreatedAt(LocalDateTime.now());
 	    
-	    Company savedCompany = repo.save(company);
+	    Company savedCompany = companyrepo.save(company);
 
 	    RegisterAuthUserRequest authUser = new RegisterAuthUserRequest();
 	    authUser.setUsername(company.getEmail());

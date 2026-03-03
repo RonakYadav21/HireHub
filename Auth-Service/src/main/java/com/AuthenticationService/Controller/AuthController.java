@@ -44,8 +44,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-    	System.out.println(loginRequest.getUsername());
-    	System.out.println(loginRequest.getPassword());
+//    	System.out.println(loginRequest.getUsername());
+//    	System.out.println(loginRequest.getPassword());
         try {
             authenticationManager.authenticate(    //This is where SecurityConfig comes into play.
                 new UsernamePasswordAuthenticationToken(   
@@ -67,7 +67,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
         }
 
-        Users user = Users.builder()
+        Users user = Users.builder() //no need to use setter method because builder is provided by lombok
             .username(request.getUsername())
             .password(request.getPassword())
             .role(request.getRole())

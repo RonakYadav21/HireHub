@@ -23,13 +23,13 @@ public class JwtAuthFilter implements GatewayFilter {
 
         // ✅ Allow public URLs without token
         if (path.contains("/signup") || path.contains("/login") || path.startsWith("/auth/")) {
-            return chain.filter(exchange);
+            return chain.filter(exchange); //pass request to next filter"
         }
 
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            return exchange.getResponse().setComplete();//Stop pipeline here and send response back to client.
         }
 
         String token = authHeader.substring(7);
@@ -40,7 +40,7 @@ public class JwtAuthFilter implements GatewayFilter {
 
         Claims claims = jwtUtil.extractAllClaims(token);
         String role = claims.get("role", String.class);
-
+        
         // ✅ Role-based route access
         if ((path.startsWith("/Student/") && !role.equals("ROLE_STUDENT")) ||
             (path.startsWith("/Company/") && !role.equals("ROLE_COMPANY")) ||
@@ -49,13 +49,13 @@ public class JwtAuthFilter implements GatewayFilter {
             exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
             return exchange.getResponse().setComplete();
         }
-
+        
         // ✅ Forwarding headers
         ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
             .header("X-User-Email", claims.getSubject())
             .header("X-User-Role", role)
             .build();
-
         return chain.filter(exchange.mutate().request(modifiedRequest).build());
     }
+    
 }

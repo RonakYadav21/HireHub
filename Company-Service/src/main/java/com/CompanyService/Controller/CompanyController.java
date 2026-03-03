@@ -211,6 +211,11 @@ public ResponseEntity<List<CompanyJobApplication>> alljobs(){
 	return ResponseEntity.ok(applicationService.getAllAppliedJobs());
 }
 
+@GetMapping("/alljobs")
+public ResponseEntity<List<JobPostingDTO>> getalljobs(){  
+			return ResponseEntity.ok(companyservice.getAllJobPostings());
+}
+
 @GetMapping("/jobcount")
 public ResponseEntity<Long> getjobcount() {
     long count = jobPostingRepo.count();

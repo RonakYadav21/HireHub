@@ -20,14 +20,15 @@ public class GatewayRoutes {
 
             // ✅ PUBLIC ROUTES (defined FIRST)
             .route("Auth-Service", r -> r.path("/auth/**")
-                .uri("lb://AUTH-SERVICE"))
+                .uri("lb://AUTH-SERVICE"))//lb:// means Load Balancer “Find the service instance from the service registry and automatically choose one instance using load balancing.”
 
             .route("Company-Signup", r -> r.path("/Company/signup")
                 .uri("lb://COMPANY-SERVICE"))
 
             .route("Student-Signup", r -> r.path("/Student/signup")
                 .uri("lb://STUDENT-SERVICE"))
-
+            .route("Admint-Signup", r -> r.path("/Admin/signup")
+                    .uri("lb://ADMIN-SERVICE"))
             // ✅ PROTECTED ROUTES (defined AFTER public)
             .route("Company-Service-Protected", r -> r.path("/Company/**")
                 .filters(f -> f.filter(jwtAuthFilter))
@@ -42,7 +43,7 @@ public class GatewayRoutes {
                     .filters(f -> f.filter(jwtAuthFilter))
                     .uri("lb://PLACEMENT-SERVICE"))
             
-            .route("Admin-Service", r -> r.path("/admin/**")
+            .route("Admin-Service", r -> r.path("/Admin/**")
                 .filters(f -> f.filter(jwtAuthFilter))
                 .uri("lb://ADMIN-SERVICE"))
 

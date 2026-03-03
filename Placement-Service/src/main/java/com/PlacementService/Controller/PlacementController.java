@@ -44,9 +44,6 @@ public class PlacementController {
 	    return ResponseEntity.ok(jobservice.fetchAllJobsForStudents());
 	}
 
-
-	
-	
 	  @GetMapping("/search")
 	    public List<JobPostingDTO> searchJobs(
 	            @RequestParam(required = false) String companyName,

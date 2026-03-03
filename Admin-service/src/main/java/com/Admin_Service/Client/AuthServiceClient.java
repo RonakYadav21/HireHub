@@ -1,17 +1,17 @@
-package com.StudentService.Service;
+package com.Admin_Service.Client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.StudentService.Model.RegisterAuthUserRequest;
+import com.Admin_Service.Model.RegisterAuthUserRequest;
 
-@FeignClient(name ="AUTH-SERVICE")//Feign = synchronous HTTP client Reactive way uses WebClient:
+
+
+@FeignClient(name ="AUTH-SERVICE")
 public interface AuthServiceClient {
 
     @PostMapping("/auth/register")
     ResponseEntity<String> registerUser(@RequestBody RegisterAuthUserRequest request);
 }
-
-

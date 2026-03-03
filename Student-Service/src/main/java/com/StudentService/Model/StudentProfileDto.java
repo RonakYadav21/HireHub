@@ -23,9 +23,9 @@ public class StudentProfileDto {
     private String address;
     private String department;
     private String batch;
-    private String domain ;
+    private String domain;
     private double cgpa;
-    private String resumeUrl;
+    private String resume_url;
     private String certifications;
     private String appliedDrives;
     private String internships;

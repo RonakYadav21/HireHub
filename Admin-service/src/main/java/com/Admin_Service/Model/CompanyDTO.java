@@ -1,4 +1,4 @@
-package com.CompanyService.Model;
+package com.Admin_Service.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +17,6 @@ public class CompanyDTO {
     private String website;         // Official website
     private String description;     // About the company
     private String logo;         // Company logo (stored in DB / cloud storage)
-
     // Placement-specific info
- 
-    private String status ;          // e.g., Active, Pending, Blacklisted
+    private String Status;          // e.g., Active, Pending, Blacklisted
 }
