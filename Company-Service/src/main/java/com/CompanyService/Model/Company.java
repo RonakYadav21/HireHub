@@ -38,7 +38,7 @@ import lombok.NoArgsConstructor;
 	    private String address;
 	    private String industry;
 	    private String domain; 
-	    private String Status;
+	    private String status;
 	    private String description;     // About the company
 	    @CreationTimestamp
 	    @Column(updatable = false, nullable = false)

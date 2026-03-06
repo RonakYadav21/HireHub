@@ -13,4 +13,7 @@ public interface StudentServiceClient {
 
     @GetMapping("/Student/count")
     long countStudent();
+
+    @GetMapping("/Student/getLatestStudent")
+	List<StudentPlacement> getLatestStudents();
 }

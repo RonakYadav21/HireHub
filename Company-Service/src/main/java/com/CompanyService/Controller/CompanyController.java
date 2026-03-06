@@ -27,6 +27,7 @@ import com.CompanyService.Model.StudentDTO;
 import com.CompanyService.Repository.CompanyRepository;
 import com.CompanyService.Repository.JobPostingRepository;
 import com.CompanyService.service.ApplicationService;
+import com.CompanyService.service.CompanyMapper;
 import com.CompanyService.service.CompanyService;
 import com.CompanyService.service.StudentFeignClient;
 import com.CompanyService.Model.CompanyJobApplication;
@@ -36,13 +37,14 @@ import com.CompanyService.Repository.ApplicationRepo;
 public class CompanyController {
 
 	@Autowired
-	 private CompanyService companyservice;
+	 private CompanyService companyService;
 	@Autowired
 	private PasswordEncoder passwordEncoder; 
 
 	@Autowired
 	  private  CompanyRepository  companyRepo;
-	
+	@Autowired
+	private CompanyMapper companymapper;
 	@Autowired
 	private JobPostingRepository jobPostingRepo;
 	
@@ -61,13 +63,13 @@ public class CompanyController {
 public ResponseEntity<?> companysignup (@RequestBody Company  company){
 	company.setPassword(passwordEncoder.encode(company.getPassword()));
 
-	Company response= companyservice.Register(company);
+	Company response= companyService.Register(company);
 	return ResponseEntity.status(HttpStatus.CREATED).body(response);
 }
 
 @GetMapping("/viewprofile")
 public ResponseEntity<?> viewProfile(@RequestHeader("X-User-Email") String email)  {
-    CompanyDTO response = companyservice.CompanyProfile(email);
+    CompanyDTO response = companyService.CompanyProfile(email);
 	return ResponseEntity.status(HttpStatus.OK).body(response);
 }
 
@@ -82,13 +84,13 @@ public JobPosting addJobPosting(@RequestBody JobPosting job,
             .orElseThrow(() -> new RuntimeException("Company not found"));
 
     job.setCompany(company);
-    return companyservice.saveJob(job);
+    return companyService.saveJob(job);
 }
 
 
 @GetMapping("/jobs")
 public ResponseEntity<List<JobPostingDTO>> getAllJobs() {
-    List<JobPostingDTO> jobs = companyservice.getAllJobPostings();
+    List<JobPostingDTO> jobs = companyService.getAllJobPostings();
     return ResponseEntity.ok(jobs);
 }
 
@@ -101,7 +103,7 @@ public List<JobPosting> searchJobs(
         @RequestParam(required = false) String location,
         @RequestParam(required = false) Double minSalary) {
 
-    return companyservice.searchJobs(companyName, domain, location, minSalary);
+    return companyService.searchJobs(companyName, domain, location, minSalary);
 }
 
 @PostMapping("jobs/{jobId}/notify-application")
@@ -146,14 +148,14 @@ public ResponseEntity<String> receiveJobApplication(
 
 @GetMapping("jobs/{jobId}")
 public JobPostingDTO getJobById(@PathVariable Long jobId) {
-    return companyservice.getJobById(jobId);
+    return companyService.getJobById(jobId);
 }
 
 @GetMapping("/jobforcompany")
 public List<JobPostingDTO> getAllForCompany(@RequestHeader("X-User-Email") String email) {
-	    Company com=companyservice.getCompanyByEmail(email);
+	    Company com=companyService.getCompanyByEmail(email);
 	    
-	        List<JobPostingDTO> jobs= companyservice.getJobsCompanyId(com.getId());
+	        List<JobPostingDTO> jobs= companyService.getJobsCompanyId(com.getId());
 	return jobs;
 			
 }
@@ -162,7 +164,7 @@ public ResponseEntity<String> editJobs(
         @PathVariable("jobId") Long jobId,
         @RequestBody JobPosting job) {
 
-    companyservice.editJobs(jobId, job);
+	companyService.editJobs(jobId, job);
     return ResponseEntity.ok("Job updated successfully");
 }
 
@@ -203,7 +205,7 @@ public ResponseEntity<?> rejectApplication(@PathVariable Long id) {
 
 @GetMapping("/getAllCompany")
 public ResponseEntity<List<CompanyDTO>> allCompnay(){
-	return ResponseEntity.ok(companyservice.getAllCompany());
+	return ResponseEntity.ok(companyService.getAllCompany());
 }
 
 @GetMapping("/getAllJobs")
@@ -213,7 +215,7 @@ public ResponseEntity<List<CompanyJobApplication>> alljobs(){
 
 @GetMapping("/alljobs")
 public ResponseEntity<List<JobPostingDTO>> getalljobs(){  
-			return ResponseEntity.ok(companyservice.getAllJobPostings());
+			return ResponseEntity.ok(companyService.getAllJobPostings());
 }
 
 @GetMapping("/jobcount")
@@ -224,7 +226,30 @@ public ResponseEntity<Long> getjobcount() {
 
 @GetMapping("/count")
 public ResponseEntity<Long> getcompanycount() {
-    long count = companyservice.getCompanyCount();
+    long count = companyService.getCompanyCount();
     return ResponseEntity.ok(count);
 }
+
+@PutMapping("/updateprofile")
+public ResponseEntity<?> updateProfile(
+        @RequestHeader("X-User-Email") String email,
+        @RequestBody CompanyDTO dto) {
+
+    Company company = companyRepo.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Student not found"));
+
+    companymapper.updateCompanyFromDto(dto, company);
+
+    companyRepo.save(company);
+
+    return ResponseEntity.ok(companymapper.companyToCompanyDto(company));
+}
+
+
+@GetMapping("/getPendingRequest")
+public List<CompanyDTO> getPendingCompanies(){
+
+    return companyService.getPendingCompanies();
+}
+
 }

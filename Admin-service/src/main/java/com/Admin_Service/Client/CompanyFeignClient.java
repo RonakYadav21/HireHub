@@ -29,4 +29,7 @@ public interface CompanyFeignClient {
 	 @GetMapping("/Company/jobcount")
 	 public long getjobcount();
 
+	 @GetMapping("/Company/getPendingRequest")
+	public List<CompanyDTO> getPendingCompanies();
+
 }

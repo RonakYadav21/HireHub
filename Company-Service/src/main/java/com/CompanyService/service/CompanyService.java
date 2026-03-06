@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.CompanyService.Messaging.ActivityPublisher;
 import com.CompanyService.Model.ApplicationResponseDTO;
 import com.CompanyService.Model.Company;
 import com.CompanyService.Model.CompanyDTO;
@@ -36,26 +37,34 @@ public class CompanyService {
 	AuthServiceClient authServiceClient;
 	
 	@Autowired
-	CompanyRepository companyrepo;
-	
+	CompanyRepository companyRepository;
+	@Autowired
+	private ActivityPublisher activityPublisher;
 	@Autowired
 	  CompanyMapper companyMapper;
 	public Company Register(Company company) {
-	    company.setStatus("pending");;  // Optional: Wait for admin approval
+	    company.setStatus("PENDING");;  // Optional: Wait for admin approval
 	    company.setCreatedAt(LocalDateTime.now());
 	    
-	    Company savedCompany = companyrepo.save(company);
+	    Company savedCompany = companyRepository.save(company);
 
 	    RegisterAuthUserRequest authUser = new RegisterAuthUserRequest();
 	    authUser.setUsername(company.getEmail());
 	    authUser.setPassword(company.getPassword());
 	    authUser.setRole("ROLE_COMPANY");
 	    authServiceClient.registerUser(authUser);
-
+	    activityPublisher.publishActivity(
+	            "COMPANY_REGISTERED",
+	            "New company registered: " + company.getName()
+	    );
 	    return savedCompany;
 	}
 
 	public JobPosting saveJob(JobPosting job) {
+		 activityPublisher.publishActivity(
+			        "JOB_POSTED",
+		            job.getCompany().getName()+" posted a new job for " + job.getJobTitle()
+		    );
 	    return jobRepo.save(job);
 	}
 
@@ -86,7 +95,7 @@ public class CompanyService {
 	    }
 
 	    public CompanyDTO CompanyProfile(String email) {
-	        Company company = companyrepo.findByEmail(email)
+	        Company company = companyRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("Company not found"));
 
 	            return companyMapper.companyToCompanyDto(company);
@@ -95,7 +104,7 @@ public class CompanyService {
 		
 
 		public Company getCompanyByEmail(String email) {
-	        Company company = companyrepo.findByEmail(email).orElseThrow(() -> new RuntimeException("Student not found"));
+	        Company company = companyRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Student not found"));
 			return company;
 		}
 
@@ -122,7 +131,7 @@ public class CompanyService {
 			}
 
 		public List<CompanyDTO> getAllCompany() {
-			List<Company> allcompanies=companyrepo.findAll();
+			List<Company> allcompanies=companyRepository.findAll();
 			 List<CompanyDTO> companyDTOs = allcompanies.stream()
 				        .map(company -> companyMapper.companyToCompanyDto(company))
 				        .collect(Collectors.toList());
@@ -130,9 +139,16 @@ public class CompanyService {
 				}
 
 		  public long getCompanyCount() {
-		        return companyrepo.count();
+		        return companyRepository.count();
 		    }
-	
+		  public List<CompanyDTO> getPendingCompanies() {
+
+		        List<Company> companies = companyRepository.findByStatus("PENDING");
+
+		        return companies.stream()
+		                .map(companyMapper::companyToCompanyDto)
+		                .toList();
+		    }
 
 		
 	    }

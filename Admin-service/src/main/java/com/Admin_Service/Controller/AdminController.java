@@ -11,13 +11,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Admin_Service.AdminService.AdminService;
 import com.Admin_Service.Messaging.JobStatusPublisher;
 import com.Admin_Service.Model.Admin;
+import com.Admin_Service.Model.AdminDTO;
 import com.Admin_Service.Model.CompanyDTO;
+import com.Admin_Service.Model.DashboardDTO;
 import com.Admin_Service.Model.JobPostingDTO;
 import com.Admin_Service.Model.StudentPlacement;
 import com.Admin_Service.Model.appliedJobDTO;
@@ -40,6 +43,12 @@ public class AdminController {
 
 		Admin response= adminservice.Register(admin);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+	
+	@GetMapping("/viewprofile")
+	public ResponseEntity<?> viewProfile(@RequestHeader("X-User-Email") String email)  {
+	    AdminDTO response = adminservice.AdminProfile(email);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping("/Studentcount")
@@ -87,4 +96,11 @@ public class AdminController {
 		 publisher.sendJobStatusUpdate(companyId, "REJECTED"); // ✅ fixed
          return ResponseEntity.ok("Application rejected");
 	}
+	
+	@GetMapping("/dashboard")
+	public DashboardDTO getDashboard() {
+	    return adminservice.getDashboardData();
+	}
+	
+	
 }

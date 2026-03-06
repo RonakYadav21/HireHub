@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.StudentService.Messaging.StudentEventPublisher;
 import com.StudentService.Model.RegisterAuthUserRequest;
 import com.StudentService.Model.Student;
 import com.StudentService.Model.StudentProfileDto;
@@ -13,32 +14,40 @@ import com.StudentService.Repository.StudentRepo;
 @Service
 public class StudentService {
 	@Autowired
-	StudentRepo studentrepo;
+	StudentRepo studentRepository;
 	
 	@Autowired
 	AuthServiceClient authServiceClient;
 	
     @Autowired
     private StudentMapper studentMapper;
+
+
+    @Autowired
+   private StudentEventPublisher activityPublisher;
 	
   public Student register(Student student) {
 	  // Save to local student DB
-	Student s= studentrepo.save(student);
+	Student s= studentRepository.save(student);
 	
 	 // Prepare AuthService DTO
     RegisterAuthUserRequest authUser = new RegisterAuthUserRequest();
     authUser.setUsername(student.getEmail());
     authUser.setPassword(student.getPassword()); // raw or encoded
     authUser.setRole("ROLE_STUDENT");
-
     // Call AuthService using Feign
     authServiceClient.registerUser(authUser);
+    
+    activityPublisher.publishActivity(
+    		"STUDENT_REGISTERED",
+    		student.getName()+" Registered" 
+    		);
 	
 	return s;
 	  }
 
 public StudentProfileDto viewStudent(String email) {
-	   Student student = studentrepo.findByEmail(email)
+	   Student student = studentRepository.findByEmail(email)
 	            .orElseThrow(() -> new RuntimeException("Student not found"));
 
 	   return studentMapper.studentToStudentProfileDto(student);
@@ -46,10 +55,15 @@ public StudentProfileDto viewStudent(String email) {
 }
 
 public List<Student> getAllStudent() {
-	 List<Student> Allstudent =studentrepo.findAll();
+	 List<Student> Allstudent =studentRepository.findAll();
 	return Allstudent;
 }
 
   public long getStudentCount() {
-        return studentrepo.count();
-    }}
+        return studentRepository.count();
+    }
+
+  public List<Student> getLatestStudents() {
+      return studentRepository.findTop5ByOrderByCreatedAtDesc();
+  }
+}

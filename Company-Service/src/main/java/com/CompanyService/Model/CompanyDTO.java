@@ -17,6 +17,8 @@ public class CompanyDTO {
     private String website;         // Official website
     private String description;     // About the company
     private String logo;         // Company logo (stored in DB / cloud storage)
+    private String contactPerson;
+    private String domain; 
 
     // Placement-specific info
  

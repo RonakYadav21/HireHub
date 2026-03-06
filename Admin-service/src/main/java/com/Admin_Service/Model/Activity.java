@@ -2,13 +2,11 @@ package com.Admin_Service.Model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,26 +14,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Admin {
+public class Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullName;
+    private String message;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    private String type; 
+    // JOB_POSTED
+    // STUDENT_APPLIED
+    // COMPANY_REGISTERED
+    // COMPANY_APPROVED
 
-    private String password;
-
-    private String phoneNumber;
-
-    private String role = "ROLE_ADMIN"; // system controlled
-
-    private String status = "ACTIVE";   // or "PENDING"
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-	}
+    private LocalDateTime time;
+}

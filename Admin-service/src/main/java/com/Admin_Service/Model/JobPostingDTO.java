@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class JobPostingDTO {
 
 	private Long id;
+//	private String email;
     private String jobTitle;
     private String description;
     private String location;

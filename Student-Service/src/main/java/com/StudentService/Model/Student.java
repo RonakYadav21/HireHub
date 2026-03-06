@@ -1,6 +1,7 @@
 package com.StudentService.Model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,7 +45,7 @@ import lombok.NoArgsConstructor;
 
 	    private String  address;
 	    
-	    private String    department ;
+	    private String  department ;
 	    private String batch ;
 	    private String domain ;
 
@@ -56,4 +57,6 @@ import lombok.NoArgsConstructor;
 	    private int semester ;
 	     private int backlogs ;
 	     private String skills ;
+	     private LocalDateTime createdAt;
+
 }

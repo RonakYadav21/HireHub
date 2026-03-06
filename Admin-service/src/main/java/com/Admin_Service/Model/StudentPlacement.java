@@ -27,6 +27,8 @@ public class StudentPlacement {
     @Column(nullable = false)
     private String domain;
 
+    private String contact;
+    private String address;
 
     // Placement details
     @Column(nullable = false)

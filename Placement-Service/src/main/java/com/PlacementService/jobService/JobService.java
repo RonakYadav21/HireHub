@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.PlacementService.Dto.JobApplicationDTO;
 import com.PlacementService.Dto.JobApplicationRequest;
 import com.PlacementService.Dto.JobPostingDTO;
+import com.PlacementService.Messaging.EventActivityPublisher;
 import com.PlacementService.Model.JobApplication;
 import com.PlacementService.Repository.JobApplicationRepository;
 import com.PlacementService.client.CompanyFeignClient;
@@ -18,6 +19,9 @@ import com.PlacementService.integration.CompanyIntegrationService;
 public class JobService {
 	  @Autowired
 	    private CompanyIntegrationService companyIntegrationService;
+	  
+	  @Autowired
+       private EventActivityPublisher eventActivityPublisher;
 
     
     @Autowired
@@ -51,6 +55,7 @@ public class JobService {
                     .build();
 
             jobapplicationrepo.save(application);
+            eventActivityPublisher.publishActivity("Student_applied_forjobs", studentEmail + "applied for"+request.getJobId());
             return "Job application submitted successfully.";
 
         } catch (Exception ex) {

@@ -31,7 +31,7 @@ public class StudentController {
 	private JobService jobService;
 	
 	@Autowired
-	 private StudentService studentservice;
+	 private StudentService studentService;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -44,20 +44,20 @@ public class StudentController {
 	public ResponseEntity<?> studentsignup (@RequestBody Student  Student){
 	    Student.setPassword(passwordEncoder.encode(Student.getPassword()));
 
-	 Student response= studentservice.register(Student);
+	 Student response= studentService.register(Student);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 		
 @GetMapping("/allstudent-List")	
 public List<Student> getAllStudent(){
-	List<Student> allStudent=studentservice.getAllStudent();
+	List<Student> allStudent=studentService.getAllStudent();
 	return  allStudent;
 }
 //	@PreAuthorize("hasRole('ROLE_STUDENT')")
 	@PostMapping("/viewprofile")
 	public ResponseEntity<?> viewStudent (@RequestHeader("X-User-Email") String email){		
 		
-    StudentProfileDto response=studentservice.viewStudent(email);
+    StudentProfileDto response=studentService.viewStudent(email);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);}
 
@@ -105,8 +105,16 @@ public List<Student> getAllStudent(){
 	    }
 	    @GetMapping("/count")
 	    public ResponseEntity<Long> getStudentCount() {
-	        long count = studentservice.getStudentCount();
+	        long count = studentService.getStudentCount();
 	        return ResponseEntity.ok(count);
+	    }
+	    
+	    @GetMapping("/getLatestStudent")
+	    public ResponseEntity<List<Student>> getLatestStudents() {
+
+	        List<Student> students = studentService.getLatestStudents();
+
+	        return ResponseEntity.ok(students);
 	    }
 	    
 	    }

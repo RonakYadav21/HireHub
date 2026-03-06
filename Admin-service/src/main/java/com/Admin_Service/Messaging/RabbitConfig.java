@@ -11,7 +11,12 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     public static final String JOB_STATUS_QUEUE = "Compnay-status-queue";
+    public static final String ACTIVITY_QUEUE = "activity-queue";
 
+    @Bean
+    public Queue activityQueue() {
+        return new Queue(ACTIVITY_QUEUE, true);
+    }
     @Bean
     public Queue jobStatusQueue() {
         return new Queue(JOB_STATUS_QUEUE, true); // durable queue
