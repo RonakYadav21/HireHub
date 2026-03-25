@@ -13,10 +13,15 @@ public class RabbitConfig {
 
     
     public static final String ACTIVITY_QUEUE = "activity-queue";
+    public static final String JOB_STATUS_QUEUE = "student-status-queue";
 
     @Bean
     public Queue activityQueue() {
         return new Queue(ACTIVITY_QUEUE, true);
+    }
+    @Bean
+    public Queue jobStatusQueue() {
+        return new Queue(JOB_STATUS_QUEUE, true); // durable queue
     }
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {

@@ -1,6 +1,7 @@
 package com.PlacementService.Dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,13 @@ public class JobPostingDTO implements Serializable {
     private String salary;
     private String companyName; // optional, for display
     private String domain;
-    private double cgpa; 
-    // Getters and Setters (or use Lombok if you like)
+    private double minCgpa;
+
+    private int numberOfPosts;
+    private String selectionProcess;
+
+    private LocalDateTime deadline;
+
+    private String jobType;
+private String skillrequired;     // Getters and Setters (or use Lombok if you like)
 }

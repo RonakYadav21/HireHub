@@ -129,16 +129,18 @@ public ResponseEntity<String> receiveJobApplication(
     }
 
     if (!student.getDomain().equalsIgnoreCase(job.getDomain())
-            || (student.getCgpa() < job.getCgpa())) {
+            || (student.getCgpa() < job.getMinCgpa())) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Student not eligible");
     }
+    Company company = companyRepo.findById(job.getCompany().getId()).orElse(null);
     // Save application
     CompanyJobApplication app = CompanyJobApplication.builder()
             .jobId(jobId)
+            .companyName(company.getName())
             .studentEmail(student.getEmail())
-            .resumeUrl(student.getResumeUrl())
-            .status("PENDING")
+            .resumeUrl(student.getResume_url())
+            .status("APPLIED")
             .build();
     applicationRepo.save(app);
 
@@ -182,9 +184,9 @@ public ResponseEntity<List<ApplicationResponseDTO>> application(
 public ResponseEntity<String> acceptApplication(@PathVariable Long id) {
     return applicationRepo.findById(id)
             .map(app -> {
-                app.setStatus("ACCEPTED");
+                app.setStatus("SHORTLISTED");
                 applicationRepo.save(app);
-                publisher.sendJobStatusUpdate(app.getJobId(), app.getStudentEmail(), "ACCEPTED"); // ✅ fixed
+                publisher.sendJobStatusUpdate(app.getJobId(),app.getCompanyName(), app.getStudentEmail(), "SHORTLISTED"); // ✅ fixed
                 return ResponseEntity.ok("Application accepted");
             })
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Application not found"));
@@ -197,7 +199,7 @@ public ResponseEntity<?> rejectApplication(@PathVariable Long id) {
 	            .map(app -> {
 	                app.setStatus("REJECTED");
 	                applicationRepo.save(app);
-	                publisher.sendJobStatusUpdate(app.getJobId(), app.getStudentEmail(), "REJECTED"); // ✅ fixed
+	                publisher.sendJobStatusUpdate(app.getJobId(),app.getCompanyName(), app.getStudentEmail(), "REJECTED"); // ✅ fixed
 	                return ResponseEntity.ok("Application rejected");
 	            })
 	            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Application not found"));

@@ -1,6 +1,4 @@
-package com.Admin_Service.Model;
-
-
+package com.AuthenticationService.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -2,6 +2,7 @@ package com.Admin_Service.Model;
 
 import java.util.List;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,6 @@ public class DashboardDTO {
 
     private List<StudentPlacement> latestStudents;
     private List<CompanyDTO> pendingCompanies;
-
+    List<StudentGraphDTO> graph ;
     private List<Activity> activities;
 }

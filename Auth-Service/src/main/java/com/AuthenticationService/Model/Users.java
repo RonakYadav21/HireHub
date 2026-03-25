@@ -29,5 +29,6 @@ public class Users {  // ✅ Make the class public
 
     @Column(nullable = false)
     private String password;
+    private String status;
 
 }

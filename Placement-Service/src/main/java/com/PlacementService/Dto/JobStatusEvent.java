@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JobStatusEvent {
 
+	private String studentEmail;
+	private String companyName;
     private Long jobId;
-    private String studentEmail;
-    private String status; // PENDING, ACCEPTED, REJECTED
+    private String application_status; // PENDING, ACCEPTED, REJECTED
 }

@@ -6,4 +6,5 @@ import lombok.Data;
 public class JobApplicationRequest {
     private Long jobId;
     private String resumeUrl;
+    private String CompanyName;
 }

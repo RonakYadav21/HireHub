@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CompanyStatusEvent {
     private Long companyId;
+    private String email;
     private String status; // PENDING, ACCEPTED, REJECTED
 }

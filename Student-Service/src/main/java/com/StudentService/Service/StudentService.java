@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import com.StudentService.Messaging.StudentEventPublisher;
 import com.StudentService.Model.RegisterAuthUserRequest;
 import com.StudentService.Model.Student;
+import com.StudentService.Model.StudentGraphDTO;
 import com.StudentService.Model.StudentProfileDto;
 import com.StudentService.Repository.StudentRepo;
 
@@ -28,6 +31,7 @@ public class StudentService {
 	
   public Student register(Student student) {
 	  // Save to local student DB
+	  student.setRole("ROLE_STUDENT");
 	Student s= studentRepository.save(student);
 	
 	 // Prepare AuthService DTO
@@ -66,4 +70,22 @@ public List<Student> getAllStudent() {
   public List<Student> getLatestStudents() {
       return studentRepository.findTop5ByOrderByCreatedAtDesc();
   }
+  
+  
+  public List<StudentGraphDTO> getStudentRegistrationGraph() {
+
+	    List<Object[]> data = studentRepository.getStudentRegistrationStats();
+
+	    return data.stream().map(obj -> {
+
+	        int monthNumber = (Integer) obj[0];
+	        Long count = (Long) obj[1];
+
+	        String monthName = Month.of(monthNumber)
+	                                .getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+
+	        return new StudentGraphDTO(monthName, count);
+
+	    }).toList();
+	}
 }

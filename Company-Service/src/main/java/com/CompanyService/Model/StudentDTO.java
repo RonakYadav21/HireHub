@@ -15,5 +15,5 @@ public class StudentDTO {
     private String companyName;
     private String jobTitle;
     private double cgpa;
-    private String resumeUrl;
+    private String resume_url;
 }

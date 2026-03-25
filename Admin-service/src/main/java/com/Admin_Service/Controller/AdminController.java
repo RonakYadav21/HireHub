@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Admin_Service.AdminService.AdminService;
-import com.Admin_Service.Messaging.JobStatusPublisher;
+import com.Admin_Service.Messaging.companyStatusPublisher;
+//import com.Admin_Service.Messaging.companyStatusPublisher;
 import com.Admin_Service.Model.Admin;
 import com.Admin_Service.Model.AdminDTO;
 import com.Admin_Service.Model.CompanyDTO;
+import com.Admin_Service.Model.CompanyStatusEvent;
 import com.Admin_Service.Model.DashboardDTO;
 import com.Admin_Service.Model.JobPostingDTO;
 import com.Admin_Service.Model.StudentPlacement;
@@ -35,8 +37,9 @@ public class AdminController {
 	@Autowired
 	private PasswordEncoder passwordEncoder; 
 
+
 	@Autowired
-	private JobStatusPublisher  publisher;
+	private companyStatusPublisher  publisher;
 	@PostMapping("/signup")
 	public ResponseEntity<?> companysignup (@RequestBody Admin admin){
 		admin.setPassword(passwordEncoder.encode(admin.getPassword()));
@@ -84,16 +87,20 @@ public class AdminController {
 
 	}
 	
-	@PutMapping("/accept/{companyId}")
-	public ResponseEntity<String> acceptApplication(@PathVariable Long companyId) {
-		 publisher.sendJobStatusUpdate(companyId, "ACCEPTED"); // ✅ fixed
+	@PutMapping("/accept")
+	public ResponseEntity<String> acceptApplication(@RequestBody CompanyStatusEvent request) {
+		 Long companyId = request.getCompanyId();
+		    String email = request.getEmail();
+		 publisher.sendcompanyStatusUpdate(companyId,email, "ACCEPTED"); // ✅ fixed
          return ResponseEntity.ok("Application accepted");
 	}
 	
 	
-	@PutMapping("/reject/{companyId}")
-	public ResponseEntity<String> rejectApplication(@PathVariable Long companyId) {
-		 publisher.sendJobStatusUpdate(companyId, "REJECTED"); // ✅ fixed
+	@PutMapping("/reject")
+	public ResponseEntity<String> rejectApplication(@RequestBody CompanyStatusEvent request) {
+		 Long companyId = request.getCompanyId();
+		    String email = request.getEmail();
+		 publisher.sendcompanyStatusUpdate(companyId,email, "REJECTED"); // ✅ fixed
          return ResponseEntity.ok("Application rejected");
 	}
 	

@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.PlacementService.Dto.CompanyDTO;
 import com.PlacementService.Dto.JobApplicationDTO;
 import com.PlacementService.Dto.JobApplicationRequest;
+//import com.PlacementService.Dto.JobApplicationStatusDTO;
 import com.PlacementService.Dto.JobPostingDTO;
 import com.PlacementService.Dto.appliedJobDTO;
 //import com.PlacementService.Model.JobApplication;
 import com.PlacementService.Model.PlacementOfficer;
 import com.PlacementService.Model.StudentPlacement;
+import com.PlacementService.Repository.JobApplicationRepository;
 import com.PlacementService.jobService.JobService;
 import com.PlacementService.jobService.PlacementOfficerService;
 
@@ -33,6 +35,8 @@ public class PlacementController {
 	
 	@Autowired
 	 private PlacementOfficerService officerService;
+	@Autowired
+	JobApplicationRepository jobapplicationrepo;
 	@PostMapping("/signup")
 	  public ResponseEntity<?> signupTPO(@RequestBody PlacementOfficer officer) {
         PlacementOfficer saved = officerService.signupTPO(officer);
@@ -58,6 +62,7 @@ public class PlacementController {
 	  public String applyForJob(
 			  @RequestBody JobApplicationRequest request, @RequestHeader("X-User-Role") String role,
 	          @RequestHeader("X-User-Email") String studentEmail) throws AccessDeniedException {
+		  System.out.println("compny name"+request.getCompanyName());
 		  if (!"ROLE_STUDENT".equals(role)) {
 		        throw new AccessDeniedException("Only students can apply for jobs.");
 		    }
@@ -108,4 +113,8 @@ public ResponseEntity<Long> getjobCount() {
 public ResponseEntity<Long> getplacedStudentCount() {
 	return  ResponseEntity.ok(jobservice.getplacedStudent());
 }
+//@GetMapping("/applications/student/{email}")
+//public List<JobApplicationStatusDTO> getStudentApplications(@RequestHeader("X-User-Email")String studentEmail){
+//     jobapplicationrepo.findByStudentEmail(studentEmail);
+//}
 }

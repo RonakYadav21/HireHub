@@ -52,6 +52,7 @@ public class CompanyService {
 	    authUser.setUsername(company.getEmail());
 	    authUser.setPassword(company.getPassword());
 	    authUser.setRole("ROLE_COMPANY");
+	    authUser.setStatus("PENDING");
 	    authServiceClient.registerUser(authUser);
 	    activityPublisher.publishActivity(
 	            "COMPANY_REGISTERED",
@@ -122,8 +123,12 @@ public class CompanyService {
 			        existingJob.setLocation(updatedJob.getLocation());
 			        existingJob.setSalary(updatedJob.getSalary());
 			        existingJob.setDomain(updatedJob.getDomain());
-			        existingJob.setCgpa(updatedJob.getCgpa());
+			        existingJob.setMinCgpa(updatedJob.getMinCgpa());
 			        existingJob.setNumberOfPosts(updatedJob.getNumberOfPosts());
+			        existingJob.setDeadline(updatedJob.getDeadline());
+			        existingJob.setJobType(updatedJob.getJobType());
+			        existingJob.setSkillrequired(updatedJob.getSkillrequired());
+			        existingJob.setSelectionProcess(updatedJob.getSelectionProcess());
 
 			        // save and return updated entity
 			        return jobPostingRepo.save(existingJob);

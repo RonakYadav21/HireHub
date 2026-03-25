@@ -1,4 +1,4 @@
-package com.Admin_Service.Messaging;
+package com.AuthenticationService.messaging;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -11,14 +11,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RabbitConfig {
+public class RabbitMqConfig {
 
-    public static final String COMPANY_STATUS_EXCHANGE = "company-status-exchange";
+	 public static final String COMPANY_STATUS_EXCHANGE = "company-status-exchange";
+	    public static final String AUTH_QUEUE = "auth-company-status-queue";
+	    public static final String ROUTING_KEY = "company.status";
 
-    public static final String AUTH_QUEUE = "auth-company-status-queue";
-    public static final String COMPANY_QUEUE = "company-status-queue";
 
-    public static final String ROUTING_KEY = "company.status";
+    @Bean
+    public Queue companyStatusQueue() {
+        return new Queue(AUTH_QUEUE, true);
+    }
 
     @Bean
     public DirectExchange exchange() {
@@ -26,28 +29,13 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Queue authQueue() {
-        return new Queue(AUTH_QUEUE, true);
-    }
-
-    @Bean
-    public Queue companyQueue() {
-        return new Queue(COMPANY_QUEUE, true);
-    }
-
-    @Bean
-    public Binding authBinding(Queue authQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(authQueue)
+    public Binding binding(Queue companyStatusQueue, DirectExchange exchange) {
+        return BindingBuilder
+                .bind(companyStatusQueue)
                 .to(exchange)
                 .with(ROUTING_KEY);
     }
-
-    @Bean
-    public Binding companyBinding(Queue companyQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(companyQueue)
-                .to(exchange)
-                .with(ROUTING_KEY);
-    }
+    
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();

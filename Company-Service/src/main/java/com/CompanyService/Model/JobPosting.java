@@ -3,7 +3,10 @@ package com.CompanyService.Model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +20,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class JobPosting {
 
     @Id
@@ -28,10 +30,19 @@ public class JobPosting {
     private String description;
     private String location;
     private String salary;
-    private String domain; 
-    private double cgpa;
+    private String domain;
+
+    private double minCgpa;
+
     private int numberOfPosts;
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company; // This links back to the company
+    private String selectionProcess;
+
+    private LocalDateTime deadline;
+
+    private String jobType;
+private String skillrequired; 
+@ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "company_id")
+@JsonIgnore
+private Company company;
 }

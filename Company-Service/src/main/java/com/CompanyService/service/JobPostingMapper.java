@@ -13,7 +13,7 @@ import java.util.List;
 public interface JobPostingMapper {
     @Mapping(source = "company.name", target = "companyName")
     @Mapping(source = "domain", target = "domain")
-    @Mapping(source = "cgpa", target = "cgpa")
+    @Mapping(source = "minCgpa", target = "minCgpa")
 
     JobPostingDTO toDto(JobPosting job);
     List<JobPostingDTO> toDtoList(List<JobPosting> jobs);

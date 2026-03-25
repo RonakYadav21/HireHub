@@ -2,6 +2,7 @@ package com.PlacementService.jobService;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.PlacementService.Dto.CompanyDTO;
 import com.PlacementService.Dto.RegisterAuthUserRequest;
 import com.PlacementService.Dto.appliedJobDTO;
+import com.PlacementService.Messaging.EventActivityPublisher;
 import com.PlacementService.Model.PlacementOfficer;
 import com.PlacementService.Model.StudentPlacement;
 import com.PlacementService.Repository.PlacementOfficerRepository;
@@ -18,7 +20,7 @@ import com.PlacementService.client.StudentFeignClient;
 
 @Service
 public class PlacementOfficerService {
-
+      private EventActivityPublisher eventActivityPublisher;
 	 private final PlacementOfficerRepository officerRepo;
 	    private final PasswordEncoder passwordEncoder;
 	    private final AuthServiceClient authServiceClient;
@@ -26,12 +28,13 @@ public class PlacementOfficerService {
 	    private final CompanyFeignClient companyfeignclient;
 
 	    public PlacementOfficerService(PlacementOfficerRepository officerRepo, PasswordEncoder passwordEncoder,AuthServiceClient authServiceClient
-	    		,StudentFeignClient studentserviceClient, CompanyFeignClient companyfeignclient ) {
+	    		,StudentFeignClient studentserviceClient, CompanyFeignClient companyfeignclient ,EventActivityPublisher eventActivityPublisher) {
 	        this.officerRepo = officerRepo;
 	        this.passwordEncoder = passwordEncoder;
 	        this.authServiceClient=authServiceClient;
 	        this.studentserviceClient=studentserviceClient;
 	        this.companyfeignclient=companyfeignclient;
+	        this.eventActivityPublisher=eventActivityPublisher;
 	    }
 
     // Signup logic for Placement TPO
@@ -45,7 +48,7 @@ public class PlacementOfficerService {
 	    authUser.setPassword(officer.getPassword());
 	    authUser.setRole("ROLE_TPO");
 	    authServiceClient.registerUser(authUser);
-
+	    eventActivityPublisher.publishActivity("PLacement_cordinator has register"  , officer.getEmail()+" has applied for Placement cordinator role");
         return officerRepo.save(officer);
     }
 

@@ -15,6 +15,7 @@ import com.Admin_Service.Model.CompanyDTO;
 import com.Admin_Service.Model.DashboardDTO;
 import com.Admin_Service.Model.JobPostingDTO;
 import com.Admin_Service.Model.RegisterAuthUserRequest;
+import com.Admin_Service.Model.StudentGraphDTO;
 import com.Admin_Service.Model.StudentPlacement;
 import com.Admin_Service.Model.appliedJobDTO;
 import com.Admin_Service.Repository.ActivityRepository;
@@ -94,6 +95,7 @@ public class AdminService {
 		    List<CompanyDTO> pendingCompanies = companyfeignclient.getPendingCompanies();
 
 		    List<Activity> activities = activityRepository.findTop10ByOrderByTimeDesc();
+		    List<StudentGraphDTO> graph = studentserviceClient.getStudentGraph();
 
 		    return new DashboardDTO(
 		            students,
@@ -101,6 +103,7 @@ public class AdminService {
 		            jobs,
 		            latestStudents,
 		            pendingCompanies,
+		            graph,
 		            activities
 		    );
 		}

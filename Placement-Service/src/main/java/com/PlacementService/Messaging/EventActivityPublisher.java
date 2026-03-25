@@ -21,6 +21,5 @@ public class EventActivityPublisher {
 	                RabbitConfig.ACTIVITY_QUEUE,
 	                event
 	        );
-
 	    }
 }

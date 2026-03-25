@@ -1,8 +1,5 @@
 package com.CompanyService.Messaging;
 
-
-
-
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +14,16 @@ public class JobStatusPublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendJobStatusUpdate(Long jobId, String studentEmail, String status) {
-        JobStatusEvent event = new JobStatusEvent(jobId, studentEmail, status);
-        rabbitTemplate.convertAndSend(RabbitConfig.JOB_STATUS_QUEUE, event);
+    public void sendJobStatusUpdate(Long jobId, String CompanyName, String studentEmail, String status) {
+
+        JobStatusEvent event = new JobStatusEvent(jobId,CompanyName, studentEmail, status);
+
+        rabbitTemplate.convertAndSend(
+                RabbitConfig.JOB_STATUS_EXCHANGE,
+                "", 
+                event
+        );
+
         System.out.println("Sent job status update: " + event);
     }
 }

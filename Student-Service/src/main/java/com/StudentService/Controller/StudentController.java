@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.StudentService.Model.JobPostingDTO;
+import com.StudentService.Model.Notification;
 import com.StudentService.Model.Student;
+import com.StudentService.Model.StudentGraphDTO;
 import com.StudentService.Model.StudentProfileDto;
 import com.StudentService.Repository.StudentRepo;
 import com.StudentService.Service.JobService;
+import com.StudentService.Service.NotificationService;
 import com.StudentService.Service.StudentMapper;
 //import com.StudentService.Service.StudentService;
 import com.StudentService.Service.StudentService;
@@ -39,6 +43,10 @@ public class StudentController {
 	 private StudentRepo studentRepository;
 	@Autowired
 	private StudentMapper studentMapper;
+	
+	@Autowired
+    private  NotificationService notificationService;
+
 	
 	@PostMapping("/signup")
 	public ResponseEntity<?> studentsignup (@RequestBody Student  Student){
@@ -61,10 +69,12 @@ public List<Student> getAllStudent(){
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);}
 
-	    @GetMapping("/view-jobs")
-	    public ResponseEntity<List<JobPostingDTO>> viewJobs() {
-	        return ResponseEntity.ok(jobService.getAllJobListings());
-	    }
+	@GetMapping("/view-jobs")
+	public ResponseEntity<List<JobPostingDTO>> viewJobs(
+	        @RequestHeader("X-User-Email") String email) {
+
+	    return ResponseEntity.ok(jobService.getAllJobListings(email));
+	}
 	    
 	    @PutMapping("/updateprofile")
 	    public ResponseEntity<?> updateProfile(
@@ -117,4 +127,20 @@ public List<Student> getAllStudent(){
 	        return ResponseEntity.ok(students);
 	    }
 	    
+	    @GetMapping("/getStudentGraph")
+		List<StudentGraphDTO> getStudentGraph(){
+	    	return studentService.getStudentRegistrationGraph();
+	    }
+
+	    @GetMapping("/notifications")
+	    public List<Notification> getNotifications(@RequestHeader("X-User-Email") String email) {
+
+	        return notificationService.getNotifications(email);
+	    }
+
+	    @PutMapping("/notifications/read/{id}")
+	    public void markAsRead(@PathVariable Long id) {
+
+	        notificationService.markAsRead(id);
+	    }
 	    }

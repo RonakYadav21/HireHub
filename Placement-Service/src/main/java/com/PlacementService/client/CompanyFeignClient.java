@@ -32,6 +32,7 @@ public interface CompanyFeignClient {
 
     @PostMapping("/Company/jobs/{jobId}/notify-application")
     void notifyCompanyAboutApplication(@PathVariable Long jobId, @RequestParam String studentEmail);
+    
     @GetMapping("/Company/jobs/{jobId}")
     JobPostingDTO getJobById(@PathVariable("jobId") Long jobId);
     

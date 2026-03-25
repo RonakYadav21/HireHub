@@ -10,6 +10,7 @@ import com.PlacementService.Dto.JobApplicationDTO;
 import com.PlacementService.Dto.JobApplicationRequest;
 import com.PlacementService.Dto.JobPostingDTO;
 import com.PlacementService.Messaging.EventActivityPublisher;
+import com.PlacementService.Messaging.JobStatusPublisher;
 import com.PlacementService.Model.JobApplication;
 import com.PlacementService.Repository.JobApplicationRepository;
 import com.PlacementService.client.CompanyFeignClient;
@@ -22,7 +23,9 @@ public class JobService {
 	  
 	  @Autowired
        private EventActivityPublisher eventActivityPublisher;
-
+	  
+	  @Autowired
+	private   JobStatusPublisher jobStatusEventPublisher;
     
     @Autowired
      private  JobApplicationRepository jobapplicationrepo;
@@ -49,13 +52,20 @@ public class JobService {
             // If no exception -> student eligible -> save application
             JobApplication application = JobApplication.builder()
                     .studentEmail(studentEmail)
+                    .companyName(request.getCompanyName())
                     .jobId(request.getJobId())
                     .resumeUrl(request.getResumeUrl())
-                    .status("PENDING")
+                    .status("APPLIED")
                     .build();
 
             jobapplicationrepo.save(application);
-            eventActivityPublisher.publishActivity("Student_applied_forjobs", studentEmail + "applied for"+request.getJobId());
+            jobStatusEventPublisher.publishJobStatus(
+                    studentEmail,
+                    request.getCompanyName(),
+                    request.getJobId(),
+                    "APPLIED"
+            );
+            eventActivityPublisher.publishActivity("Student_applied_forjobs", studentEmail + " applied for");
             return "Job application submitted successfully.";
 
         } catch (Exception ex) {

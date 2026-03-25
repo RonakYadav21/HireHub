@@ -1,4 +1,4 @@
-package com.CompanyService.Model;
+package com.StudentService.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,5 +13,4 @@ public class JobStatusEvent {
     private String companyName;
     private String studentEmail;
     private String application_status; 
-
 }

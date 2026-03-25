@@ -20,6 +20,8 @@ import com.AuthenticationService.Model.Users;
 import com.AuthenticationService.Repository.UserRepository;
 import com.AuthenticationService.UserService.CustomUserDetailsService;
 import com.AuthenticationService.util.JwtUtil;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import  com.AuthenticationService.CustomException.AccountStatusException;
 
 
 
@@ -44,22 +46,38 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-//    	System.out.println(loginRequest.getUsername());
-//    	System.out.println(loginRequest.getPassword());
+
         try {
-            authenticationManager.authenticate(    //This is where SecurityConfig comes into play.
-                new UsernamePasswordAuthenticationToken(   
-                    loginRequest.getUsername(), loginRequest.getPassword())
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword())
             );
+
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                 .body("Invalid username or password");
+                    .body("Invalid username or password");
+
+        } catch (InternalAuthenticationServiceException e) {
+            // 🔥 extract your custom message
+            Throwable cause = e.getCause();
+
+            if (cause instanceof AccountStatusException) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(cause.getMessage());
+            }
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Authentication error");
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+
+        final UserDetails userDetails =
+                userDetailsService.loadUserByUsername(loginRequest.getUsername());
+
         final String jwt = jwtUtil.generateToken(userDetails);
+
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
-    
     
     @PostMapping("/register")  // will be called when a user register in their micorservice  by that microservice
     public ResponseEntity<?> register(@RequestBody RegisterAuthUserRequest request) {

@@ -23,11 +23,11 @@ public class JobStatusListener {
         this.CompanyApplicationRepository = CompanyApplicationRepository;
     }
 
-    @RabbitListener(queues = RabbitConfig.COMPANY_STATUS_QUEUE, ackMode = "MANUAL")
+    @RabbitListener(queues = RabbitConfig.COMPANY_QUEUE, ackMode = "MANUAL")
     public void handleJobStatusEvent(  @Payload CompanyStatusEvent event , Message message,
             Channel channel) throws Exception {
     	 try {
-        System.out.println("Received company status update: " + event);
+//        System.out.println("Received company status update: " + event);
 
         // Update status in Placement DB
         Company application = CompanyApplicationRepository

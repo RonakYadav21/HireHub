@@ -18,6 +18,7 @@ public class CompanyJobApplication {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	  private  Long jobId;
+	  private String companyName;
      private String studentEmail;
      private String  resumeUrl;
      private String   status;

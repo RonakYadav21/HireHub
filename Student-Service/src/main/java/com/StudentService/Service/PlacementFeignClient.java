@@ -22,4 +22,9 @@ List<JobPostingDTO> searchJobs(
         @RequestParam(required = false) String domain,
         @RequestParam(required = false) String minSalary
 );
+
+
+//@GetMapping("/applications/student")
+//List<JobApplicationDTO> getStudentApplications();
+
 }
