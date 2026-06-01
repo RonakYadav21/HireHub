@@ -1,9 +1,7 @@
 package com.StudentService.Service;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import com.StudentService.Model.Notification;
 import com.StudentService.Repository.NotificationRepository;
 
